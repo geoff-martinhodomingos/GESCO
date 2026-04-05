@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEBMS GEOff - Gestão Académica V20 Gold</title>
+    <!-- Configuração PWA (App) Direta -->
+    <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIkNFTVMgR0VPZmYgVjIwIiwKICAic2hvcnRfbmFtZSI6ICJHRU9mZiIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZmZmZmZmIiwKICAidGhlbWVfY29sb3IiOiAiIzFhNzNlOCIsCiAgImljb25zIjogW3sgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi8yOTQyLzI5NDI3ODkucG5nIiwgInNpemVzIjogIjUxMng1MTIiLCAidHlwZSI6ICJpbWFnZS9wbmciIH1dCn0=">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #eef2f3; padding: 10px; display: flex; justify-content: center; }
+        .card-sistema { width: 100%; max-width: 1200px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        h2, h3, h4 { text-align: center; color: #1a73e8; margin: 10px 0; }
+        .welcome-note { background: #e8f0fe; border-left: 5px solid #1a73e8; padding: 15px; margin-bottom: 20px; border-radius: 8px; text-align: center; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 15px; }
+        .form-grid label { font-size: 11px; font-weight: bold; color: #555; display: block; margin-bottom: 4px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 13px; }
+        .full-width { grid-column: 1 / -1; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-add { background: #1a73e8; color: white; }
+        .btn-voltar { background: #6c757d; color: white; margin-top: 15px; }
+        .btn-del { background: #ff4757; color: white; padding: 4px 8px; font-size: 10px; float: right; width: auto; }
+        .hidden { display: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px; color: #000; background: white; }
+        th, td { border: 1px solid #000; padding: 6px; text-align: center; }
+        th { background: #f2f2f2; font-weight: bold; }
+        .bloco-assinaturas { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; text-align: center; font-size: 10px; }
+        .linha-ass { border-top: 1px solid #000; width: 80%; margin: 30px auto 5px; }
+        @media print { .no-print, button, .form-grid, select, input, .area-dados, .welcome-note { display: none !important; } .card-sistema { box-shadow: none; border: none; width: 100%; padding: 0; } }
+    </style>
+</head>
+<body>
+
+<div class="card-sistema">
+    <h2 class="no-print">CEBMS GEOff - Complexo Escolar Nº 295</h2>
+
+    <!-- LOGIN -->
+    <div id="painel-login">
+        <input id="campo-user" type="text" placeholder="Utilizador (admin)">
+        <input id="campo-pass" type="password" placeholder="Senha (1234)">
+        <button class="btn-add" onclick="tentarLogin()">Entrar</button>
+    </div>
+
+    <!-- MENU -->
+    <div id="painel-menu" class="hidden">
+        <div id="nota-boas-vindas" class="welcome-note">
+            <h4>Bem-vindo, Administrador!</h4>
+            <p id="data-atual"></p>
+        </div>
+        <div class="form-grid">
+            <button class="btn-add" style="background:#8e44ad" onclick="mostrarModulo('aba-turmas')">Turmas / Disc.</button>
+            <button class="btn-add" style="background:#28a745" onclick="mostrarModulo('aba-alunos')">Alunos</button>
+            <button class="btn-add" style="background:#17a2b8" onclick="mostrarModulo('aba-profs')">Professores</button>
+            <button class="btn-add" style="background:#f1c40f; color:black" onclick="mostrarModulo('aba-notas')">Notas</button>
+            <button class="btn-add" style="background:#6f42c1" onclick="mostrarModulo('aba-mapas')">Mapas</button>
+        </div>
+        <div class="area-dados" style="background:#f1f1f1; padding:15px; border-radius:10px; margin-top:10px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <button style="background:#444; color:white;" onclick="fazerBackup()">📥 Exportar</button>
+            <div style="position:relative;">
+                <button style="background:#2c3e50; color:white; width:100%">📤 Importar</button>
+                <input type="file" id="input-backup" accept=".json" onchange="importarBackup(event)" style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;">
+            </div>
+        </div>
+        <button style="background:#dc3545; color:white; margin-top:15px" onclick="location.reload()">Sair</button>
+    </div>
+
+    <!-- MÓDULOS (Omitidos aqui por brevidade, manter os que já tens) -->
+    <div id="aba-turmas" class="hidden"><h3>Turmas</h3><div class="form-grid"><div><label>Nível</label><select id="t-nivel"><option>Pré-Escolar</option><option>Primário</option><option>Secundário</option></select></div><div><label>Classe/Turma</label><input id="t-nome" placeholder="7ª A"></div><button class="btn-add" onclick="addT()">Criar</button></div><div class="form-grid"><input id="d-nome" class="full-width" placeholder="Disciplina"><button class="btn-add" onclick="addD()">Add</button></div><div id="list-t"></div><div id="list-d"></div><button class="btn-voltar" onclick="mostrarMenu()">Voltar</button></div>
+    <div id="aba-alunos" class="hidden"><h3>Alunos</h3><div class="form-grid"><input id="a-nome" class="full-width" placeholder="Nome"><select id="a-sexo"><option value="M">M</option><option value="F">F</option></select><input id="a-nasc" placeholder="Nasc."><input id="a-bi" placeholder="BI"><select id="a-turma-sel"></select><input id="a-pai" placeholder="Pai"><select id="a-estado"><option value="Ativo">Ativo</option><option value="Desistente">Desistente</option></select><button class="btn-add full-width" onclick="addA()">Salvar</button></div><div id="list-a"></div><button class="btn-voltar" onclick="mostrarMenu()">Voltar</button></div>
+    <div id="aba-profs" class="hidden"><h3>Profs</h3><div class="form-grid"><input id="p-nome" class="full-width" placeholder="Nome"><input id="p-nasc" placeholder="Nasc."><input id="p-bi" placeholder="BI"><input id="p-hab" placeholder="Hab."><button class="btn-add full-width" onclick="addP()">Salvar</button></div><div id="list-p"></div><button class="btn-voltar" onclick="mostrarMenu()">Voltar</button></div>
+    <div id="aba-notas" class="hidden"><select id="sel-t-notas" onchange="renderP(this.value)"></select><div id="cont-notas"></div><button class="btn-voltar no-print" onclick="mostrarMenu()">Voltar</button></div>
+    <div id="aba-mapas" class="hidden"><h3>Mapas</h3><div id="cont-mapas"></div><button class="btn-voltar no-print" onclick="mostrarMenu()">Voltar</button></div>
+</div>
+
+<script>
+// ATIVAÇÃO DO SERVICE WORKER INTERNO (TRICK)
+const swCode = "self.addEventListener('install', e => e.waitUntil(caches.open('geoff-v1').then(c => c.addAll(['./'])))); self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));";
+const blob = new Blob([swCode], {type: 'application/javascript'});
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register(URL.createObjectURL(blob)); }
+
+// BANCO DE DADOS E LÓGICA (A mesma que já tens)
+let db = JSON.parse(localStorage.getItem('geoff_db_v20')) || { turmas:[], disciplinas:[], alunos:[], profs:[], notas:[] };
+const save = () => localStorage.setItem('geoff_db_v20', JSON.stringify(db));
+
+function tentarLogin() {
+    if(document.getElementById('campo-user').value==="admin" && document.getElementById('campo-pass').value==="1234") {
+        document.getElementById('painel-login').classList.add('hidden');
+        document.getElementById('painel-menu').classList.remove('hidden');
+        document.getElementById('data-atual').innerText = "Hoje é " + new Date().toLocaleDateString('pt-PT', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+    } else alert("Dados incorretos!");
+}
+
+function mostrarModulo(id) {
+    document.getElementById('painel-menu').classList.add('hidden');
+    document.querySelectorAll('[id^="aba-"]').forEach(a => a.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+    if(id==='aba-turmas') { listT(); listD(); }
+    if(id==='aba-alunos') { document.getElementById('a-turma-sel').innerHTML = db.turmas.map(t=>`<option value="${t.n}">${t.n}</option>`).join(''); listA(); }
+    if(id==='aba-profs') listP();
+    if(id==='aba-notas') document.getElementById('sel-t-notas').innerHTML = '<option>Escolha a Turma</option>' + db.turmas.map(t=>`<option value="${t.n}">${t.n}</option>`).join('');
+    if(id==='aba-mapas') gerarMapasEstatisticos();
+}
+
+function mostrarMenu() { document.querySelectorAll('[id^="aba-"]').forEach(a => a.classList.add('hidden')); document.getElementById('painel-menu').classList.remove('hidden'); }
+
+// --- REPETIR AS FUNÇÕES addT, listT, addD, listD, addA, listA, addP, listP, renderP, saveN, gerarMapasEstatisticos, del, fazerBackup, importarBackup QUE JÁ TINHAS ---
+function addT(){ db.turmas.push({id:Date.now(), n:document.getElementById('t-nome').value, nivel:document.getElementById('t-nivel').value}); save(); listT(); }
+function listT(){ document.getElementById('list-t').innerHTML = "<h4>Turmas</h4>"+db.turmas.map(t=>`<p>${t.n} <button class="btn-del" onclick="del('turmas',${t.id})">X</button></p>`).join(''); }
+function addD(){ db.disciplinas.push({id:Date.now(), n:document.getElementById('d-nome').value}); save(); listD(); }
+function listD(){ document.getElementById('list-d').innerHTML = "<h4>Disciplinas</h4>"+db.disciplinas.map(d=>`<p>${d.n} <button class="btn-del" onclick="del('disciplinas',${d.id})">X</button></p>`).join(''); }
+function addA(){ db.alunos.push({id:Date.now(), nome:document.getElementById('a-nome').value, sexo:document.getElementById('a-sexo').value, turma:document.getElementById('a-turma-sel').value, nasc:document.getElementById('a-nasc').value, bi:document.getElementById('a-bi').value, pai:document.getElementById('a-pai').value, estado:document.getElementById('a-estado').value}); save(); listA(); }
+function listA(){ let h = `<table><tr><th>Nome</th><th>Turma</th><th>Ação</th></tr>`; db.alunos.forEach(a => h+=`<tr><td>${a.nome}</td><td>${a.turma}</td><td><button class="btn-del" onclick="del('alunos',${a.id})">X</button></td></tr>`); document.getElementById('list-a').innerHTML = h+"</table>"; }
+function addP(){ db.profs.push({id:Date.now(), nome:document.getElementById('p-nome').value, bi:document.getElementById('p-bi').value, nasc:document.getElementById('p-nasc').value, hab:document.getElementById('p-hab').value}); save(); listP(); }
+function listP(){ let h = `<table><tr><th>Nome</th><th>Habilitações</th><th>Ação</th></tr>`; db.profs.forEach(p => h+=`<tr><td>${p.nome}</td><td>${p.hab}</td><td><button class="btn-del" onclick="del('profs',${p.id})">X</button></td></tr>`); document.getElementById('list-p').innerHTML = h+"</table>"; }
+function renderP(t) { const als = db.alunos.filter(a=>a.turma===t); let h = `<h4>Pauta: ${t}</h4><table><tr><th>Aluno</th>${db.disciplinas.map(d=>`<th>${d.n}</th>`).join('')}</tr>`; als.forEach(a=>{ h+=`<tr><td>${a.nome}</td>`; db.disciplinas.forEach(d=>{ let idN = `n_${a.id}_${d.id}`, v = db.notas.find(n=>n.id===idN)?.v || ""; h+=`<td><input type="number" value="${v}" onchange="saveN('${idN}',this.value)" style="width:40px; border:none; text-align:center;"></td>`; }); h+=`</tr>`; }); h += `</table><div class="bloco-assinaturas"><div><div class="linha-ass"></div><p>Diretor Turma</p></div><div><div class="linha-ass"></div><p>Coord. Pedagógico</p></div><div><div class="linha-ass"></div><p>Diretor Geral</p></div></div>`; document.getElementById('cont-notas').innerHTML = h; }
+function saveN(id,v){ const i=db.notas.findIndex(n=>n.id===id); if(i>-1) db.notas[i].v=v; else db.notas.push({id,v}); save(); }
+function gerarMapasEstatisticos() { const niveis = ["Pré-Escolar", "Primário", "Secundário", "GERAL"]; let htmlTotal = ""; niveis.forEach(niv => { let turmas = niv === "GERAL" ? db.turmas : db.turmas.filter(t => t.nivel === niv); if(turmas.length === 0 && niv !== "GERAL") return; let d = { m_mat:0, f_mat:0, m_des:0, f_des:0, m_apr:0, f_apr:0, m_rep:0, f_rep:0 }; turmas.forEach(t => { db.alunos.filter(a => a.turma === t.n).forEach(a => { if(a.sexo === 'M') d.m_mat++; else d.f_mat++; if(a.estado === 'Desistente') { if(a.sexo === 'M') d.m_des++; else d.f_des++; } else { let s=0; db.disciplinas.forEach(dis=>s+=parseFloat(db.notas.find(n=>n.id===`n_${a.id}_${dis.id}`)?.v || 0)); if((s/(db.disciplinas.length||1)) >= 10) { if(a.sexo === 'M') d.m_apr++; else d.f_apr++; } else { if(a.sexo === 'M') d.m_rep++; else d.f_rep++; } } }); }); const tM=d.m_mat+d.f_mat, tA=d.m_apr+d.f_apr, tR=d.m_rep+d.f_rep, tD=d.m_des+d.f_des; htmlTotal += `<h4>MAPA - ${niv.toUpperCase()}</h4><table><tr><th rowspan="2">INDICADORES</th><th colspan="3">MATRICULADOS</th><th colspan="3">DESISTENTES</th><th colspan="3">APROVADOS</th><th colspan="3">REPROVADOS</th></tr><tr><th>MF</th><th>F</th><th>%</th><th>MF</th><th>F</th><th>%</th><th>MF</th><th>F</th><th>%</th><th>MF</th><th>F</th><th>%</th></tr><tr><td><b>TOTAL</b></td><td class="bg-total">${tM}</td><td>${d.f_mat}</td><td>100%</td><td class="bg-total">${tD}</td><td>${d.f_des}</td><td>${tM?((tD/tM)*100).toFixed(1):0}%</td><td class="bg-total">${tA}</td><td>${d.f_apr}</td><td>${tM?((tA/tM)*100).toFixed(1):0}%</td><td class="bg-total">${tR}</td><td>${d.f_rep}</td><td>${tM?((tR/tM)*100).toFixed(1):0}%</td></tr></table><div class="bloco-assinaturas" style="grid-template-columns: 1fr 1fr;"><div><div class="linha-ass"></div><p>Secretaria</p></div><div><div class="linha-ass"></div><p>Diretor Geral</p></div></div><br>`; }); document.getElementById('cont-mapas').innerHTML = htmlTotal; }
+function del(c,id){ if(confirm("Eliminar?")){ db[c]=db[c].filter(i=>i.id!==id); save(); mostrarModulo('aba-turmas'); } }
+function fazerBackup() { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db)],{type:'application/json'})); a.download='backup_geoff.json'; a.click(); }
+function importarBackup(e) { const reader = new FileReader(); reader.onload = (event) => { try { const novosDados = JSON.parse(event.target.result); if(novosDados.alunos && novosDados.turmas) { if(confirm("Substituir dados?")) { db = novosDados; save(); location.reload(); } } } catch(err) { alert("Inválido!"); } }; reader.readAsText(e.target.files); }
+</script>
+</body>
+</html>
